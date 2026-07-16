@@ -1,0 +1,28 @@
+﻿const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto('https://eventhub.rahulshettyacademy.com/login');
+  await page.fill('#email','dummydol@yahoo.com');
+  await page.fill('#password','Hyderabad@12345');
+  await page.click('#login-btn');
+  await page.waitForLoadState('networkidle');
+  await page.goto('https://eventhub.rahulshettyacademy.com/events');
+  await page.waitForSelector('a#book-now-btn');
+  await page.click('a#book-now-btn');
+  await page.waitForLoadState('networkidle');
+  await page.fill('input[placeholder="Your full name"]', 'Automation User');
+  await page.fill('input[placeholder="you@email.com"]', 'test@raga.com');
+  await page.fill('input[placeholder="+91 98765 43210"]', '7565344344');
+  await page.click('button:has-text("Confirm Booking")');
+  await page.waitForLoadState('networkidle');
+  await page.goto('https://eventhub.rahulshettyacademy.com/bookings');
+  await page.waitForLoadState('networkidle');
+  const pageUrl = page.url();
+  const buttons = await page.$$eval('button, a', els => els.map(el => ({tag: el.tagName, text: el.innerText.trim(), id: el.id, class: el.className, href: el.href || null})).filter(x => x.text));
+  const rows = await page.$$eval('table tr', trs => trs.map(tr => Array.from(tr.querySelectorAll('td,th')).map(td => td.innerText.trim())));
+  console.log('URL=' + pageUrl);
+  console.log('BUTTONS=' + JSON.stringify(buttons.slice(0,80), null,2));
+  console.log('ROWS=' + JSON.stringify(rows.slice(0,20), null,2));
+  await browser.close();
+})();
