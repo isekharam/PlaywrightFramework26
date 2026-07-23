@@ -3,6 +3,7 @@ import { expect } from '@playwright/test';
 export class EventBookingPage {
 
     constructor(page) {
+
         this.page = page;
         this.browseEventsLink = page.locator("a[href='/events']").filter({ hasText: 'Browse Events' }).first();
         this.categoryDropdown = page.getByRole('combobox').first();
@@ -17,7 +18,7 @@ export class EventBookingPage {
         this.cancelBookingButton = page.locator('button#cancel-booking-btn').first();
         this.cancelBookingConfirmButton = page.locator('button', { hasText: 'Yes, cancel it' });
         this.bookingCards = page.locator('#booking-card');
-        this.bookingCancleconformationCloseButton = page.locator("//button[@aria-label='Dismiss']");
+        this.bookingCancelConfirmationCloseButton = page.locator("//button[@aria-label='Dismiss']");
     }
 
     async clickBrowseEvents() {
@@ -99,7 +100,7 @@ export class EventBookingPage {
         await this.cancelBookingButton.click();
         await expect(this.cancelBookingConfirmButton).toBeVisible();
         await this.cancelBookingConfirmButton.click();
-        await this.bookingCancleconformationCloseButton.click();
+        await expect(this.bookingCancelConfirmationCloseButton).toBeHidden();
 
         if (initialCount > 0) {
             await expect(this.bookingCards).toHaveCount(initialCount - 1);
